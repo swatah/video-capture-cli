@@ -23,13 +23,13 @@ pip install -r requirements.txt
 ### Capture from webcam
 
 ```bash
-python capture.py --cam 0 --fps 30 --out output.mp4 --show True
+python capture.py --cam 0 --fps 30 --w 640 --h 480 --out output.mp4 --show True
 ```
 
 ### Capture from video file
 
 ```bash
-python capture.py --video input.mp4 --fps 30 --out output.mp4 --show True
+python capture.py --video input.mp4 --fps 30 --w 640 --h 480 --out output.mp4 --show True
 ```
 
 ### Options:
@@ -47,7 +47,7 @@ python capture.py --video input.mp4 --fps 30 --out output.mp4 --show True
 ### Example:
 
 ```bash
-python capture.py --cam 0 --fps 25 --out capture_output.mp4 --show True
+python capture.py --cam 0 --fps 25 --w 640 --h 480 --out output.mp4 --show True
 ```
 
 This will capture from the first webcam, at 25 FPS, and save the output to capture_output.mp4 with preview.

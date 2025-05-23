@@ -7,6 +7,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Capture and process video input.")
     parser.add_argument("--video", type=str, help="Path to input video file.")
     parser.add_argument("--cam", type=int, help="Camera index for webcam input.")
+    parser.add_argument("--w", type=int, default=640, help="input video width.")
+    parser.add_argument("--h", type=int, default=480, help="input video height.")
     parser.add_argument(
         "--fps", type=int, default=30, help="Frames per second for output video."
     )
@@ -28,14 +30,22 @@ def capture():
         print("Error: You must specify either --video or --cam.")
         return
 
+    WIDTH = args.w
+    HEIGHT = args.h
     CAPTURE_FPS = args.fps
     OUTPUT_FILE = args.out
     SHOW_PREVIEW = args.show
     OUTPUT_DIR = "output"
 
+    print(WIDTH, HEIGHT)
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    cap = cv2.VideoCapture(INPUT_CAM)
+    cap = cv2.VideoCapture(INPUT_CAM, cv2.CAP_V4L2)
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"MJPG"))
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
     cap.set(cv2.CAP_PROP_FPS, CAPTURE_FPS)
 
     WIDTH = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -43,11 +53,18 @@ def capture():
 
     OUTPUT_FILE_PATH = os.path.join(OUTPUT_DIR, OUTPUT_FILE)
     out = cv2.VideoWriter(
-        OUTPUT_FILE_PATH, cv2.VideoWriter_fourcc(*"mp4v"), CAPTURE_FPS, (WIDTH, HEIGHT)
+        OUTPUT_FILE_PATH, cv2.VideoWriter_fourcc(*"MJPG"), CAPTURE_FPS, (WIDTH, HEIGHT)
     )
 
     fps = cap.get(cv2.CAP_PROP_FPS)
-    print(f"video/cam fps:{fps:.0f} FPS, output fps:{CAPTURE_FPS}")
+    print(f"Requested fps:{fps:.0f} FPS, Output fps:{CAPTURE_FPS}")
+
+    print(
+        "Resolution:",
+        WIDTH,
+        "x",
+        HEIGHT,
+    )
 
     while True:
         ret, frame = cap.read()
